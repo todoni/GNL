@@ -5,38 +5,40 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/28 12:22:23 by sohan             #+#    #+#             */
-/*   Updated: 2021/05/29 21:38:34 by sohan            ###   ########.fr       */
+/*   Created: 2021/05/31 14:11:30 by sohan             #+#    #+#             */
+/*   Updated: 2021/05/31 19:45:36 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
+
 int	get_next_line(int fd, char **line)
 {
-	int				len;
-	static int		i;
-	char			*buffer;
+	static char	*save;
+	int			i;
+	int			index;
+	int			status;
 
 	i = 0;
-	buffer = calloc(BUFFER_SIZE, sizeof(char));
-	if ((len = read(fd, (void*)buffer, BUFFER_SIZE)) == -1)
+	index = 0;
+	if ((status = read(fd, *line, BUFFER_SIZE)) == -1)
 		return (-1);
-	//printf("%d bytes read.\n", len);
-	while (i < len)
+	if (status > 0)
+		save = *line;
+	while (i < status)
 	{
-		//printf("[gnl]:line28 passes.\n");
-		//printf("line 29:%c, %c\n", **(line + i), *(buffer + i));
-		if (*(buffer + i) == '\n')
+		if (*(save + i) == '\n')
 		{
-			len = 1;
+			status = 1;
 			break;
 		}
-		*(*line + i) = *(buffer + i);
-		//printf("line 31:%c, %c\n", **(line + i), *(buffer + i));
-		//printf("[gnl]:line32 passes.\n[%d]line is %s.\nbuffer is\n%s.\n", i, *line, buffer);
 		i++;
 	}
-	//printf("get_next_line succesfully end. Bye bye!\n");
-	return (len);
+	while (index < i)
+	{
+		*(*line + index) = *(save + index);
+		index++;
+	}
+	save += index + 1;
+	return (status);
 }
