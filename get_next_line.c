@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:11:30 by sohan             #+#    #+#             */
-/*   Updated: 2021/05/31 19:45:36 by sohan            ###   ########.fr       */
+/*   Updated: 2021/05/31 21:31:06 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,32 @@
 
 int	get_next_line(int fd, char **line)
 {
-	static char	*save;
+	t_list		*node;
+	t_list		*temp;
+	static int	bytes;
 	int			i;
-	int			index;
 	int			status;
 
-	i = 0;
-	index = 0;
-	if ((status = read(fd, *line, BUFFER_SIZE)) == -1)
-		return (-1);
-	if (status > 0)
-		save = *line;
-	while (i < status)
+	node = 0;
+	while ((status = read(fd, *line, BUFFER_SIZE)))
 	{
-		if (*(save + i) == '\n')
+		while (i < status)
 		{
-			status = 1;
-			break;
+			if (*(*line + i) == '\n')
+			{
+				status = 1;
+				break;
+			}
+			i++;
 		}
-		i++;
+		temp = ft_lstnew((void*)ft_substr(*line, 0, i));
+		ft_lstadd_back(&node, temp);
+		i = 0;
 	}
-	while (index < i)
+	while (node)
 	{
-		*(*line + index) = *(save + index);
-		index++;
+		*line = ft_strjoin(*line, node->content);
+		node = node->next;
 	}
-	save += index + 1;
 	return (status);
 }
