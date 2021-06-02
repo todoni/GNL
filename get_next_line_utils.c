@@ -6,12 +6,12 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/30 15:35:24 by sohan             #+#    #+#             */
-/*   Updated: 2021/05/31 21:15:11 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/02 19:42:16 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
+#include <stdio.h>
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	i;
@@ -20,16 +20,17 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	i = 0;
 	if (len + start > ft_strlen(s))
 		len = ft_strlen(s + start);
-	substr = (char*)ft_calloc(len + 1, sizeof(char));
+	substr = (char*)malloc(len + 1);
 	if (substr == 0)
 		return (0);
 	while (start < ft_strlen(s) && i < len)
 	{
-		if (*(s + start + i) == '\0')
-			break ;
 		*(substr + i) = *(s + start + i);
 		i++;
+		if (*(s + start + i) == '\0')
+			break ;
 	}
+	*(substr + i) = '\0';
 	return (substr);
 }
 
@@ -87,7 +88,7 @@ t_list	*ft_lstnew(void *content)
 {
 	t_list	*lstnew;
 
-	lstnew = (t_list*)ft_calloc(1, sizeof(t_list));
+	lstnew = (t_list*)malloc(sizeof(t_list));
 	if (lstnew == 0)
 		return (0);
 	lstnew->content = content;
@@ -136,4 +137,23 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	str_joined = append_str(str_joined, s2);
 	str_joined -= ft_strlen(s1);
 	return (str_joined);
+}
+
+void	ft_lstclear(t_list **lst, void (*del)(void*))
+{
+	t_list	*temp;
+
+	while (*lst)
+	{
+		temp = ft_lstnew((*lst)->next);
+		ft_lstdelone(*lst, del);
+		*lst = temp->content;
+		free(temp);
+	}
+}
+
+void	ft_lstdelone(t_list *lst, void (*del)(void*))
+{
+	del(lst->content);
+	free(lst);
 }

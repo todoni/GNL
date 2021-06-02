@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/29 13:56:20 by sohan             #+#    #+#             */
-/*   Updated: 2021/05/31 19:39:54 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/01 11:51:20 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,17 @@
 int	main()
 {
 	int		fd;
-	int		fd2;
-	int		fd3;
-	int		index;
+	//int		fd2;
+	//int		fd3;
+	//int		index;
 	int		i = 0;
 	int		result;
-	int		bytes;
-	int		binary;
+	//int		bytes;
+	//int		binary;*/
 	char	*buf;
-	int		count = 1;
+	//int		count = 1;
 	//char	nulltest[] = "asdf\0dfdf\0asdf";
-	char	*test1 = "asdfg\nbdfsd\ndfasdfjisdff";
+	//char	*test1 = "asdfg\nbdfsd\ndfasdfjisdff";
 	if ((fd = open("alphabet", O_CREAT|O_RDWR, S_IRWXU)) == -1)
 	{
 		perror("[open] An error occurred!!!\n");
@@ -70,7 +70,7 @@ int	main()
 			break;
 		i++;
 	}
-	printf("buf is \n%s\n", buf);
+	//printf("buf is \n%s\n", buf);
 	/*index = read(fd2, buf, BUFFER_SIZE);
 	if ((fd3 = open("get_next_line.h.gch", O_RDONLY)) == -1)
 	{

@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/28 12:17:28 by sohan             #+#    #+#             */
-/*   Updated: 2021/05/31 21:29:13 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/02 15:39:00 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,7 @@ void	ft_lstadd_back(t_list **lst, t_list *new);
 t_list	*ft_lstlast(t_list *lst);
 char	*append_str(char *origin, const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
+void	ft_lstclear(t_list **lst, void (*del)(void*));
+void	ft_lstdelone(t_list *lst, void (*del)(void*));
 
 #endif
