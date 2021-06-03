@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:11:30 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/03 19:30:34 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/03 20:16:24 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	get_next_line(int fd, char **line)
 	t_list		*node;
 	t_list		*temp;
 	char		*joined;
+	char		*new_line;
 	static char	*save;
 	int			i;
 	int			status;
@@ -26,21 +27,20 @@ int	get_next_line(int fd, char **line)
 	node = 0;
 	temp = 0;
 	joined = "";
+	new_line = (char*)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (BUFFER_SIZE == 0 || BUFFER_SIZE == -1)
-		return (-1);
-	if ((*line = ft_calloc(BUFFER_SIZE + 1, sizeof(char))) == 0)
 		return (-1);
 	while (1)
 	{
-		if ((status = read(fd, *line, BUFFER_SIZE)) == -1)
+		if ((status = read(fd, new_line, BUFFER_SIZE)) == -1)
 			return (-1);
-		*(*line + status) = '\0';
+		*(new_line + status) = '\0';
 		if (save == 0)
-			save = *line;
+			save = new_line;
 		else
 		{
 			len = ft_strlen(save);
-			save = ft_strjoin(save, *line);
+			save = ft_strjoin(save, new_line);
 		}
 		i = 0;
 		while (i < len + BUFFER_SIZE)
@@ -62,10 +62,11 @@ int	get_next_line(int fd, char **line)
 	while (node)
 	{
 		joined = ft_strjoin(joined, node->content);
-		ft_lstdelone(node, &free);
+		temp = node;
 		node = node->next;
+		ft_lstdelone(temp, &free);
 	}
 	*line = joined;
-	free(node);
+	free(new_line);
 	return ((int)status);
 }

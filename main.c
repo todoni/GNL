@@ -11,7 +11,7 @@ int		main()
 	int		count;
 
 	fd = open("long", O_RDONLY);	
-
+	
 	while ((ret = get_next_line(fd, &line)) > 0)
 	{
 		printf("%s\n", line);
