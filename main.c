@@ -8,16 +8,19 @@ int		main()
 	int		ret;
 	char	*line;
 	int		fd;
+	int		count;
 
-	fd = open("alphabet", O_RDONLY);	
+	fd = open("long", O_RDONLY);	
 
 	while ((ret = get_next_line(fd, &line)) > 0)
 	{
 		printf("%s\n", line);
 		free(line);
 		line = 0;
+		count++;
 	}
-	printf("%s", line);
+	printf("%s\n", line);
 	free(line);
 	line = 0;
+	close(fd);
 }

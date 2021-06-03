@@ -6,12 +6,11 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:11:30 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/02 19:45:07 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/03 19:30:34 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 int	get_next_line(int fd, char **line)
 {
@@ -21,47 +20,52 @@ int	get_next_line(int fd, char **line)
 	static char	*save;
 	int			i;
 	int			status;
+	int			len;
+	int			c;
 
 	node = 0;
 	temp = 0;
 	joined = "";
-	if ((*line = malloc(1)) == 0)
+	if (BUFFER_SIZE == 0 || BUFFER_SIZE == -1)
+		return (-1);
+	if ((*line = ft_calloc(BUFFER_SIZE + 1, sizeof(char))) == 0)
 		return (-1);
 	while (1)
 	{
 		if ((status = read(fd, *line, BUFFER_SIZE)) == -1)
 			return (-1);
-		if (status == 0 && *save != 0)
+		*(*line + status) = '\0';
+		if (save == 0)
+			save = *line;
+		else
 		{
-			*line = save;
-			status = BUFFER_SIZE;
+			len = ft_strlen(save);
+			save = ft_strjoin(save, *line);
 		}
 		i = 0;
-		while (i < status)
+		while (i < len + BUFFER_SIZE)
 		{
-			if (*(*line + i) == '\n')
+			if (*(save + i) == '\n')
 			{
 				status = 1;
-				break;
+				break ;
 			}
 			i++;
 		}
-		if (*line != 0)
-		{
-			temp = ft_lstnew(ft_substr((const char*)*line, 0, i));
-			save = ft_substr(*line, i + 1, BUFFER_SIZE);
-		}
-		if (status == 0 && *save == 0)
-			return (0);
+		temp = ft_lstnew((void*)ft_substr(save, 0, i));
+		c = save[i];
+		save = ft_substr(save, i + 1, len + BUFFER_SIZE);
 		ft_lstadd_back(&node, temp);
-		if (status == 1)
+		if ((status == 0 && *save == 0) || (status == 1 && c == '\n'))
 			break;
 	}
 	while (node)
 	{
 		joined = ft_strjoin(joined, node->content);
+		ft_lstdelone(node, &free);
 		node = node->next;
 	}
 	*line = joined;
+	free(node);
 	return ((int)status);
 }
