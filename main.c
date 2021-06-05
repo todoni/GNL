@@ -10,7 +10,7 @@ int		main()
 	int		fd;
 	int		count;
 
-	fd = open("long", O_RDONLY);	
+	fd = open("test2.txt", O_RDONLY);	
 	
 	while ((ret = get_next_line(fd, &line)) > 0)
 	{

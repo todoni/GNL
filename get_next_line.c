@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   refactoring.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 14:11:30 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/03 20:16:24 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/04 14:27:40 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,14 @@ int	get_next_line(int fd, char **line)
 	int			c;
 
 	node = 0;
-	temp = 0;
 	joined = "";
-	new_line = (char*)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (BUFFER_SIZE == 0 || BUFFER_SIZE == -1)
 		return (-1);
 	while (1)
 	{
+		new_line = (char*)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 		if ((status = read(fd, new_line, BUFFER_SIZE)) == -1)
 			return (-1);
-		*(new_line + status) = '\0';
 		if (save == 0)
 			save = new_line;
 		else
