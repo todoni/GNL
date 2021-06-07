@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/29 13:56:20 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/01 11:51:20 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/07 10:51:59 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,21 @@
 #include <string.h>
 #include <malloc/malloc.h>
 #include "get_next_line.h"
+
+int	read_recursive(int fd)
+{
+	char	*buffer;
+	int		read_value;
+	int		return_value;
+	buffer = (char*)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (buffer == 0)
+		return (-1);
+	if (read_value == 0)
+		return (0);
+	read_value = read(fd, buffer, BUFFER_SIZE);
+	return (return_value = read_recursive(fd));
+}
+
 int	main()
 {
 	int		fd;
@@ -43,6 +58,8 @@ int	main()
 	}
 	lseek(fd, 0, SEEK_SET);*/
 	buf = malloc(1);
+	result = read_recursive(fd);
+	printf("%d\n", result);
 	/*printf("size of buf is %zu after user memory allocation.\n", malloc_size(buf));
 	if ((bytes = read(fd, buf, BUFFER_SIZE)) == -1)
 	{
@@ -62,7 +79,7 @@ int	main()
 		exit (1);
 	}
 	lseek(fd2, 0, SEEK_SET);*/
-	while (1)
+	/*while (1)
 	{
 		result = get_next_line(fd, &buf);
 		printf("[test.c line %d]:gnl returns %d.\nbuf is %s\n", i + 1, result, buf);
@@ -71,7 +88,7 @@ int	main()
 		i++;
 	}
 	//printf("buf is \n%s\n", buf);
-	/*index = read(fd2, buf, BUFFER_SIZE);
+	index = read(fd2, buf, BUFFER_SIZE);
 	if ((fd3 = open("get_next_line.h.gch", O_RDONLY)) == -1)
 	{
 		perror("[open] An error occurred!!!\n");
