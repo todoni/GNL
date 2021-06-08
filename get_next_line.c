@@ -6,12 +6,12 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 10:05:13 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/07 20:20:22 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/08 17:55:05 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
+#include <stdio.h>
 int	get_next_line(int fd, char **line)
 {
 	static t_list	*save;
@@ -25,21 +25,27 @@ int	get_next_line(int fd, char **line)
 	if (buffer == 0)
 		return (-1);
 	val_read = read(fd, buffer, BUFFER_SIZE);
+	buffer[val_read] = '\0';
 	blocks = ft_split(buffer, '\n');
-	free(buffer);
 	i = 0;
 	while (blocks[i])
 	{
 		ft_lstadd_back(&save, ft_lstnew((void*)blocks[i]));
 		i++;
 	}
-	//if (save == 0)
-	//	ft_lstadd_back(&save, ft_lstnew((void*)buffer));
-	*line = save->content;
-	if (save->next == 0 && val_read == 0)
+	if (save == 0)
+		ft_lstadd_back(&save, ft_lstnew((void*)ft_strdup(buffer)));
+	free(buffer);
+	*line = ft_strdup(save->content);
+	if (*(char*)(save->content) == 0 && val_read == 0)
+	{
+		ft_lstdelone(save, &free);
+		free(blocks);
 		return (0);
+	}
 	temp = save;
-	free(save);
-	save = temp->next;
+	save = save->next;
+	ft_lstdelone(temp, &free);
+	free(blocks);
 	return (1);
 }

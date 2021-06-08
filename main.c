@@ -8,7 +8,7 @@ int		main()
 	int		ret;
 	char	*line;
 	int		fd;
-	int		count;
+	int		count = 0;
 
 	fd = open("test2.txt", O_RDONLY);	
 	
@@ -23,4 +23,5 @@ int		main()
 	free(line);
 	line = 0;
 	close(fd);
+	//while(1){;};
 }

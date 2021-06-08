@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 10:43:48 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/07 15:17:06 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/08 18:34:44 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,16 +99,16 @@ static const char	*put_words(char **strs, const char *str, char c, int i)
 		str++;
 	return (str);
 }
-static void			free_memory(char **strs, int i)
+void				free_memory(char **strs)
 {
-	int	index;
+	int	i;
 
-	index = 0;
-	while (index <= i)
+	i = 0;
+	while (strs[i])
 	{
-		free(strs[index]);
-		strs[index] = 0;
-		index++;
+		free(strs[i]);
+		strs[i] = 0;
+		i++;
 	}
 	free(strs);
 }
@@ -132,7 +132,7 @@ char				**ft_split(const char *str, char c)
 		strs[i] = (char *)malloc((count_word_len(str, c) + 1) * sizeof(char));
 		if (strs[i] == 0)
 		{
-			free_memory(strs, i);
+			free_memory(strs);
 			return (0);
 		}
 		str = put_words(strs, str, c, i);
@@ -140,4 +140,57 @@ char				**ft_split(const char *str, char c)
 	}
 	strs[i] = 0;
 	return (strs);
+}
+
+void	ft_lstdelone(t_list *lst, void (*del)(void*))
+{
+	del(lst->content);
+	free(lst);
+}
+
+void	ft_lstclear(t_list **lst, void (*del)(void*))
+{
+	t_list	*temp;
+
+	while (*lst)
+	{
+		temp = ft_lstnew((*lst)->next);
+		ft_lstdelone(*lst, del);
+		*lst = temp->content;
+		free(temp);
+	}
+}
+
+char	*ft_strdup(const char *s1)
+{
+	size_t	len;
+	char	*ptr_copy;
+
+	len = 0;
+	len = ft_strlen(s1);
+	ptr_copy = (char *)malloc(len * sizeof(char) + 1);
+	if (ptr_copy == 0)
+		return (0);
+	while (*s1)
+	{
+		*ptr_copy = *s1;
+		s1++;
+		ptr_copy++;
+	}
+	*ptr_copy = '\0';
+	ptr_copy -= len;
+	return (ptr_copy);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	len;
+
+	len = 0;
+	while (*s)
+	{
+		s++;
+		len++;
+	}
+	return (len);
 }
