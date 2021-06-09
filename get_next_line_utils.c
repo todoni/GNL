@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 10:43:48 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/08 18:34:44 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/09 20:48:07 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 		*lst = new;
 }
 
-t_list	*ft_lstnew(void *content)
+t_list	*ft_lstnew(char *content, char *buffer, int count)
 {
 	t_list	*lstnew;
 
@@ -46,6 +46,8 @@ t_list	*ft_lstnew(void *content)
 	if (lstnew == 0)
 		return (0);
 	lstnew->content = content;
+	lstnew->buffer = buffer;
+	lstnew->count = count;
 	lstnew->next = 0;
 	return (lstnew);
 }
@@ -148,19 +150,6 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*))
 	free(lst);
 }
 
-void	ft_lstclear(t_list **lst, void (*del)(void*))
-{
-	t_list	*temp;
-
-	while (*lst)
-	{
-		temp = ft_lstnew((*lst)->next);
-		ft_lstdelone(*lst, del);
-		*lst = temp->content;
-		free(temp);
-	}
-}
-
 char	*ft_strdup(const char *s1)
 {
 	size_t	len;
@@ -193,4 +182,49 @@ size_t	ft_strlen(const char *s)
 		len++;
 	}
 	return (len);
+}
+
+char	*append_str(char *origin, const char *str)
+{
+	size_t	i;
+	size_t	index;
+
+	i = 0;
+	index = ft_strlen(str);
+	while (i < index)
+	{
+		origin[i] = str[i];
+		i++;
+	}
+	origin[i]= '\0';
+	return (origin);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*str_joined;
+	size_t	len_joined;
+
+	len_joined = ft_strlen(s1) + ft_strlen(s2);
+	str_joined = (char *)malloc((len_joined + 1) * sizeof(char));
+	if (str_joined == 0)
+		return (0);
+	str_joined = append_str(str_joined, s1);
+	str_joined += ft_strlen(s1);
+	str_joined = append_str(str_joined, s2);
+	str_joined -= ft_strlen(s1);
+	return (str_joined);
+}
+
+int		ft_strchr(const char *s, int c)
+{
+	if (c == 0)
+		return (0);
+	while (*s)
+	{
+		if (*s == (char)c)
+			return (1);
+		s++;
+	}
+	return (0);
 }
