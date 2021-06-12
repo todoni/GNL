@@ -50,98 +50,6 @@ t_list	*ft_lstnew(void *content)
 	return (lstnew);
 }
 
-static int			count_word(const char *str, char c)
-{
-	int	word_count;
-
-	word_count = 0;
-	while (*str)
-	{
-		while (*str != c && *str)
-			str++;
-		if (*(str - 1) != c)
-		{
-			word_count++;
-		}
-		if (*str == '\0')
-			break ;
-		str++;
-	}
-	return (word_count);
-}
-
-static int			count_word_len(const char *str, char c)
-{
-	int word_len;
-
-	word_len = 0;
-	while (*str != c && *str)
-	{
-		str++;
-		word_len++;
-	}
-	return (word_len);
-}
-
-static const char	*put_words(char **strs, const char *str, char c, int i)
-{
-	int j;
-
-	j = 0;
-	while (*str != c && *str)
-	{
-		strs[i][j] = *str;
-		j++;
-		str++;
-	}
-	strs[i][j] = '\0';
-	while (*str == c)
-		str++;
-	return (str);
-}
-void				free_memory(char **strs)
-{
-	int	i;
-
-	i = 0;
-	while (strs[i])
-	{
-		free(strs[i]);
-		strs[i] = 0;
-		i++;
-	}
-	free(strs);
-}
-
-char				**ft_split(const char *str, char c)
-{
-	char	**strs;
-	int		i;
-	int		num_word;
-
-	strs = 0;
-	i = 0;
-	while (*str == c && *str)
-		str++;
-	num_word = count_word(str, c);
-	strs = (char **)malloc((num_word + 1) * sizeof(char *));
-	if (strs == 0)
-		return (0);
-	while (i < num_word)
-	{
-		strs[i] = (char *)malloc((count_word_len(str, c) + 1) * sizeof(char));
-		if (strs[i] == 0)
-		{
-			free_memory(strs);
-			return (0);
-		}
-		str = put_words(strs, str, c, i);
-		i++;
-	}
-	strs[i] = 0;
-	return (strs);
-}
-
 void	ft_lstdelone(t_list *lst, void (*del)(void*))
 {
 	del(lst->content);
@@ -161,24 +69,26 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 	}
 }
 
-char	*ft_strdup(const char *s1)
+char	*ft_strndup(const char *s1, size_t n)
 {
 	size_t	len;
+    size_t  i;
 	char	*ptr_copy;
 
 	len = 0;
 	len = ft_strlen(s1);
+    i = 0;
+	if (n > len)
+        len = n;
 	ptr_copy = (char *)malloc(len * sizeof(char) + 1);
 	if (ptr_copy == 0)
 		return (0);
-	while (*s1)
+	while (s1[i] && i < n)
 	{
-		*ptr_copy = *s1;
-		s1++;
-		ptr_copy++;
+		ptr_copy[i] = s1[i];
+		i++;
 	}
-	*ptr_copy = '\0';
-	ptr_copy -= len;
+	ptr_copy[i] = '\0';
 	return (ptr_copy);
 }
 

@@ -33,7 +33,7 @@ void				free_memory(char **strs);
 char				**ft_split(const char *str, char c);
 void				ft_lstdelone(t_list *lst, void (*del)(void*));
 void				ft_lstclear(t_list **lst, void (*del)(void*));
-char				*ft_strdup(const char *s1);
+char				*ft_strndup(const char *s1, size_t n);
 size_t				ft_strlen(const char *s);
 
 #endif
