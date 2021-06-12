@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 13:43:19 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/09 21:21:54 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/12 17:05:34 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,62 +15,24 @@
 int	get_next_line(int fd, char **line)
 {
 	char			*buffer;
-	char			**strs;
 	static t_list	*save;
-	t_list			*temp;
-	ssize_t			val_read;
-	int				i;
-
+	ssize_t			read_val;
 
 	*line = "";
-	while (1)
+	read_val = 1;
+	while (read_val)
 	{
-		i = 0;
 		buffer = (char*)malloc((BUFFER_SIZE + 1) * sizeof(char));
 		if (buffer == 0)
 			return (-1);
-		val_read = read(fd, buffer, BUFFER_SIZE);
-		buffer[val_read] = '\0';
-		strs = ft_split(buffer, '\n');
-		while (strs[i])
-		{
-			ft_lstadd_back(&save, ft_lstnew(ft_strdup(strs[i]), ft_strdup(buffer), i));
-			i++;
-		}
-		free(strs);
-		if (save == 0)
-			ft_lstadd_back(&save, ft_lstnew("", "", 0));
-		if ((ft_strchr(save->buffer, '\n') || ft_strchr(buffer, '\n')) && i > 1)
-		{
-			while (save->next->count == 0)
-			{
-				*line = ft_strjoin(*line, ft_strdup(save->content));
-				temp = save;
-				save = save->next;
-				ft_lstdelone(temp, &free);
-			}
-			*line = ft_strjoin(*line, ft_strdup(save->content));
-			temp = save;
-			save = save->next;
-			ft_lstdelone(temp, &free);
-			return (1);
-		}
-		/*if (ft_strchr(buffer, '\n') && i <= 1)
-		{	
-			while (save)
-			{
-				*line = ft_strjoin(*line, ft_strdup(save->content));
-				temp = save;
-				save = save->next;
-				ft_lstdelone(temp, &free);
-			}
-			return (1);
-		}*/
-		if (val_read == 0 && *(save->content) == 0)
-		{	
-			*line = ft_strdup(save->content);
-			//ft_lstdelone(save, &free);
-			return (0);
-		}
+		read_val = read(fd, buffer, BUFFER_SIZE);
+		buffer[read_val] = '\0';
+		ft_lstadd_back(&save, gnl_split(buffer, '\n'));
+		if (ft_strchr(buffer, '\n') == 1)
+			break;
 	}
+	*line = gnl_strjoin(&save, BUFFER_SIZE);
+	if (save)
+		read_val = 1;
+	return (read_val);
 }
