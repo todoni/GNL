@@ -5,47 +5,34 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/06/07 10:05:13 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/08 17:55:05 by sohan            ###   ########.fr       */
+/*   Created: 2021/06/09 13:43:19 by sohan             #+#    #+#             */
+/*   Updated: 2021/06/12 17:05:34 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
+
 int	get_next_line(int fd, char **line)
 {
-	static t_list	*save;
-	t_list			*temp;
 	char			*buffer;
-	char			**blocks;
-	int				val_read;
-	int				i;
+	static t_list	*save;
+	ssize_t			read_val;
 
-	buffer = (char*)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (buffer == 0)
-		return (-1);
-	val_read = read(fd, buffer, BUFFER_SIZE);
-	buffer[val_read] = '\0';
-	blocks = ft_split(buffer, '\n');
-	i = 0;
-	while (blocks[i])
+	*line = "";
+	read_val = 1;
+	while (read_val)
 	{
-		ft_lstadd_back(&save, ft_lstnew((void*)blocks[i]));
-		i++;
+		buffer = (char*)malloc((BUFFER_SIZE + 1) * sizeof(char));
+		if (buffer == 0)
+			return (-1);
+		read_val = read(fd, buffer, BUFFER_SIZE);
+		buffer[read_val] = '\0';
+		ft_lstadd_back(&save, gnl_split(buffer, '\n'));
+		if (ft_strchr(buffer, '\n') == 1)
+			break;
 	}
-	if (save == 0)
-		ft_lstadd_back(&save, ft_lstnew((void*)ft_strdup(buffer)));
-	free(buffer);
-	*line = ft_strdup(save->content);
-	if (*(char*)(save->content) == 0 && val_read == 0)
-	{
-		ft_lstdelone(save, &free);
-		free(blocks);
-		return (0);
-	}
-	temp = save;
-	save = save->next;
-	ft_lstdelone(temp, &free);
-	free(blocks);
-	return (1);
+	*line = gnl_strjoin(&save, BUFFER_SIZE);
+	if (save || **line)
+		read_val = 1;
+	return (read_val);
 }

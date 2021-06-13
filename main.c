@@ -10,16 +10,16 @@ int		main()
 	int		fd;
 	int		count = 0;
 
-	fd = open("test2.txt", O_RDONLY);	
+	fd = open("alphabet", O_RDONLY);	
 	
 	while ((ret = get_next_line(fd, &line)) > 0)
 	{
-		printf("%s\n", line);
+		printf("%s return : %d\n", line, ret);
 		free(line);
 		line = 0;
 		count++;
 	}
-	printf("%s\n", line);
+	printf("%s return : %d\n", line, ret);
 	free(line);
 	line = 0;
 	close(fd);
