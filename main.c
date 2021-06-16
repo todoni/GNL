@@ -10,8 +10,9 @@ int		main()
 	int		fd;
 	int		count = 0;
 
-	fd = open("alphabet", O_RDONLY);	
+	fd = open("5.txt", O_RDONLY);	
 	
+	//&line = NULL;	
 	while ((ret = get_next_line(fd, &line)) > 0)
 	{
 		printf("%s return : %d\n", line, ret);
@@ -23,5 +24,5 @@ int		main()
 	free(line);
 	line = 0;
 	close(fd);
-	//while(1){;};
+	while(1){;};
 }
