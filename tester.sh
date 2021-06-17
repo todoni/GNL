@@ -1,9 +1,13 @@
 #!/bin/bash
+echo -e "\033[32;1m"Norm Check"\033[m"
+read $a
+norminette -R CheckForbiddenSourceHeader get_next_line*
 echo -e "\033[32;1m"WAR MACHINE v2019"\033[m"
 read $a
 git clone https://github.com/C4r4c0l3/gnl-war-machine-v2019.git
 cd gnl-war-machine-v2019/
 sed -i "" 's/..\/..\/get_next_line/..\//' my_config.sh
+./grademe.sh
 cd ..
 echo -e "\033[32;1m"42CURSUS GNL TESTS"\033[m"
 read $a

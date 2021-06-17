@@ -6,20 +6,11 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 10:43:48 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/16 21:39:02 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/17 12:32:58 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-
-void	free_one_and_next(t_list **lst)
-{
-	t_list	*temp;
-
-	temp = *lst;
-	*lst = (*lst)->next;
-	ft_lstdelone(temp, &free);
-}
 
 void	ft_lstadd_back(t_list **lst, t_list *new)
 {
@@ -50,30 +41,10 @@ t_list	*ft_lstnew(void *content, size_t len, char newline)
 	return (lstnew);
 }
 
-void	ft_lstdelone(t_list *lst, void (*del)(void*))
+void	free_all_nodes(t_list **lst)
 {
-	del(lst->content);
-	lst->content = 0;
-	del(lst);
-	lst = 0;
-}
-
-char	*ft_strndup(const char *s1, size_t n)
-{
-    size_t  i;
-	char	*ptr_copy;
-
-	i = 0;
-	ptr_copy = (char *)malloc((n + 1) * sizeof(char));
-	if (ptr_copy == 0)
-		return (0);
-	while (s1[i] && i < n)
-	{
-		ptr_copy[i] = s1[i];
-		i++;
-	}
-	ptr_copy[i] = '\0';
-	return (ptr_copy);
+	while (*lst)
+		free_one_and_next(lst);
 }
 
 int		ft_strchr(const char *s, int c)
@@ -87,26 +58,6 @@ int		ft_strchr(const char *s, int c)
 		s++;
 	}
 	return (0);
-}
-
-t_list	*gnl_split(const char *str, char sep)
-{
-	t_list	*node;
-	size_t	i;
-
-	node = 0;
-	i = 0;
-	while (*str)
-	{
-		while (str[i] != sep && str[i])
-			i++;
-		ft_lstadd_back(&node, ft_lstnew(ft_strndup(str, i), i, str[i]));
-		str += i;
-		if (*str == sep)
-			str++;
-		i = 0;
-	}
-	return (node);
 }
 
 char	*concatenate_nodes(t_list **save, char *joined)
@@ -134,27 +85,5 @@ char	*concatenate_nodes(t_list **save, char *joined)
 		j++;
 	}
 	joined[i] = '\0';
-	return (joined);
-}
-
-char	*gnl_strjoin(t_list **save)
-{
-	size_t	len_joined;
-	t_list	*curr;
-	char	*joined;
-
-	len_joined = 0;
-	curr = *save;
-	while (curr && curr->newline != '\n')
-	{
-		len_joined += curr->len;
-		curr = curr->next;
-	}
-	if (curr)
-		len_joined += curr->len;
-	joined = (char*)malloc((len_joined + 1) * sizeof(char));
-	if (joined == 0)
-		return (0);
-	joined = concatenate_nodes(save, joined);
 	return (joined);
 }
