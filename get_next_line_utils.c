@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 10:43:48 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/16 21:33:07 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/17 11:58:21 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ void	free_one_and_next(t_list **lst)
 
 	temp = *lst;
 	*lst = (*lst)->next;
-	ft_lstdelone(temp, &free);
+	free(temp->content);
+	temp->content = 0;
+	free(temp);
+	temp = 0;
 }
 
 void	ft_lstadd_back(t_list **lst, t_list *new)
@@ -50,12 +53,10 @@ t_list	*ft_lstnew(void *content, size_t len, char newline)
 	return (lstnew);
 }
 
-void	ft_lstdelone(t_list *lst, void (*del)(void*))
+void	free_all_nodes(t_list **lst)
 {
-	del(lst->content);
-	lst->content = 0;
-	del(lst);
-	lst = 0;
+	while (*lst)
+		free_one_and_next(lst);
 }
 
 char	*ft_strndup(const char *s1, size_t n)
@@ -89,9 +90,11 @@ int		ft_strchr(const char *s, int c)
 	return (0);
 }
 
-t_list	*gnl_split(const char *str, char sep)
+t_list	*gnl_split(const char *str, char sep, ssize_t *success)
 {
 	t_list	*node;
+	t_list	*temp_node;
+	char	*temp_str;
 	size_t	i;
 
 	node = 0;
@@ -100,7 +103,14 @@ t_list	*gnl_split(const char *str, char sep)
 	{
 		while (str[i] != sep && str[i])
 			i++;
-		ft_lstadd_back(&node, ft_lstnew(ft_strndup(str, i), i, str[i]));
+		if ((temp_str = ft_strndup(str, i)) == 0 || \
+				(temp_node = ft_lstnew(temp_str, i, str[i])) == 0)
+		{
+			free_all_nodes(&node);
+			*success = -1;
+			return (0);
+		}
+		ft_lstadd_back(&node, temp_node);
 		str += i;
 		if (*str == sep)
 			str++;
@@ -137,12 +147,14 @@ char	*concatenate_nodes(t_list **save, char *joined)
 	return (joined);
 }
 
-char	*gnl_strjoin(t_list **save)
+char	*gnl_strjoin(t_list **save, ssize_t *success)
 {
 	size_t	len_joined;
 	t_list	*curr;
 	char	*joined;
 
+	if (*success == -1)
+		return (0);
 	len_joined = 0;
 	curr = *save;
 	while (curr && curr->newline != '\n')
@@ -154,7 +166,10 @@ char	*gnl_strjoin(t_list **save)
 		len_joined += curr->len;
 	joined = (char*)malloc((len_joined + 1) * sizeof(char));
 	if (joined == 0)
+	{
+		*success = -1;
 		return (0);
+	}
 	joined = concatenate_nodes(save, joined);
 	return (joined);
 }

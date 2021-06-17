@@ -6,7 +6,7 @@
 /*   By: sohan <sohan@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 13:43:19 by sohan             #+#    #+#             */
-/*   Updated: 2021/06/16 21:35:49 by sohan            ###   ########.fr       */
+/*   Updated: 2021/06/17 11:46:37 by sohan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ int	get_next_line(int fd, char **line)
 		if ((read_val = read(fd, buffer, BUFFER_SIZE)) == -1)
 			return (-1);
 		buffer[read_val] = '\0';
-		ft_lstadd_back(&save[fd], gnl_split(buffer, '\n'));
-		if (ft_strchr(buffer, '\n') == 1)
+		ft_lstadd_back(&save[fd], gnl_split(buffer, '\n', &read_val));
+		if (ft_strchr(buffer, '\n') == 1 || read_val == -1)
 			break;
 	}
-	*line = gnl_strjoin(&save[fd]);
-	if (save[fd] && save[fd]->newline == '\n')
+	*line = gnl_strjoin(&save[fd], &read_val);
+	if (save[fd] && save[fd]->newline == '\n' && read_val != -1)
 	{
 		free_one_and_next(&save[fd]);
 		read_val = 1;
